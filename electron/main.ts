@@ -30,6 +30,8 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+    title:'Harmony',
+
   })
 
   // Test active push message to Renderer-process.
