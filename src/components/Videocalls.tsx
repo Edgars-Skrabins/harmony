@@ -17,12 +17,9 @@ const Videocalls = () => {
 
         peer.on('call', (call: MediaConnection) => {
             const getUserMedia =
-                //@ts-expect-error its never null
-                navigator.getUserMedia //@ts-expect-error its never null
-                || navigator.webkitGetUserMedia //@ts-expect-error its never null
-                || navigator.mozGetUserMedia;
+                navigator.mediaDevices.getUserMedia;
 
-            getUserMedia?.({video: true, audio: true}, (mediaStream: MediaStream) => {
+            getUserMedia?.({ video: true, audio: true }).then((mediaStream: MediaStream) => {
                 if (currentUserVideoRef.current) {
                     currentUserVideoRef.current.srcObject = mediaStream;
                     currentUserVideoRef.current.play();
@@ -34,8 +31,10 @@ const Videocalls = () => {
                         remoteVideoRef.current.play();
                     }
                 });
+            }).catch((error: any) => {
+                console.error('getUserMedia error:', error);
             });
-        })
+        });
         peerInstance.current = peer;
 
         return () => {
@@ -48,18 +47,15 @@ const Videocalls = () => {
 
     const call = (remotePeerId: string) => {
         const getUserMedia =
-            //@ts-expect-error its never null
-            navigator.getUserMedia //@ts-expect-error its never null
-            || navigator.webkitGetUserMedia //@ts-expect-error its never null
-            || navigator.mozGetUserMedia;
+            navigator.mediaDevices.getUserMedia;
 
-        getUserMedia?.({video: true, audio: true}, (mediaStream: MediaStream) => {
+        getUserMedia?.({ video: true, audio: true }).then((mediaStream: MediaStream) => {
             if (currentUserVideoRef.current) {
                 currentUserVideoRef.current.srcObject = mediaStream;
                 currentUserVideoRef.current.play();
             }
 
-            const call = peerInstance.current?.call(remotePeerId, mediaStream)
+            const call = peerInstance.current?.call(remotePeerId, mediaStream);
 
             call?.on('stream', (remoteStream: MediaStream) => {
                 if (remoteVideoRef.current) {
@@ -67,8 +63,11 @@ const Videocalls = () => {
                     remoteVideoRef.current.play();
                 }
             });
+        }).catch((error: any) => {
+            console.error('getUserMedia error:', error);
         });
     }
+
 
     return (
         <div className="App">
