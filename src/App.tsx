@@ -1,13 +1,12 @@
-import './App.css'
-import Videocalls from "./components/Videocalls.tsx";
+import './App.css';
+import VideoCalls from './components/VideoCalls.tsx';
 
 function App() {
-
   return (
     <>
-        <Videocalls/>
+      <VideoCalls />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
