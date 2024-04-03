@@ -1,18 +1,20 @@
 module.exports = {
-  root: true,
-  env: { browser: true, es2020: true },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-  ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  extends: ['eslint:recommended'],
+  plugins: ['@typescript-eslint'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
+    'no-unused-vars': 'error',
+    'no-undef': 'off',
+    'class-property/class-property-semicolon': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    // Add your ESLint rules here
   },
-}
+  overrides: [
+    {
+      files: ['tests/**/*'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
+};
