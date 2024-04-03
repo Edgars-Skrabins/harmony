@@ -4,6 +4,7 @@ import Peer, {MediaConnection} from 'peerjs';
 const VideoCalls = () => {
   const [peerId, setPeerId] = useState<string>('');
   const [remotePeerIdValue, setRemotePeerIdValue] = useState<string>('');
+  const [currentCall, setCurrentCall] = useState<MediaConnection>();
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const currentUserVideoRef = useRef<HTMLVideoElement>(null);
   const peerInstance = useRef<Peer | null>(null);
@@ -16,9 +17,13 @@ const VideoCalls = () => {
     });
 
     peer.on('call', (call: MediaConnection) => {
+      setCurrentCall(call);
       const getUserMedia = navigator.mediaDevices.getUserMedia;
 
-      getUserMedia?.({video: true, audio: true})
+      getUserMedia?.({
+        video: true,
+        audio: true,
+      })
         .then((mediaStream: MediaStream) => {
           if (currentUserVideoRef.current) {
             currentUserVideoRef.current.srcObject = mediaStream;
@@ -49,7 +54,10 @@ const VideoCalls = () => {
   const call = (remotePeerId: string) => {
     const getUserMedia = navigator.mediaDevices.getUserMedia;
 
-    getUserMedia?.({video: true, audio: true})
+    getUserMedia?.({
+      video: true,
+      audio: true,
+    })
       .then((mediaStream: MediaStream) => {
         if (currentUserVideoRef.current) {
           currentUserVideoRef.current.srcObject = mediaStream;
@@ -70,17 +78,18 @@ const VideoCalls = () => {
       });
   };
 
+  const endCall = () => {
+    currentCall?.close();
+  };
+
   return (
     <div className="App">
       <div className="appContainer">
         <h1> {peerId} </h1>
         <div className="column">
-          <input
-            type="text"
-            value={remotePeerIdValue}
-            onChange={(e) => setRemotePeerIdValue(e.target.value)}
-          />
+          <input type="text" value={remotePeerIdValue} onChange={(e) => setRemotePeerIdValue(e.target.value)} />
           <button onClick={() => call(remotePeerIdValue)}>Call</button>
+          {currentCall && <button onClick={endCall}>End Call</button>}
         </div>
         <div>
           <video ref={currentUserVideoRef} />
